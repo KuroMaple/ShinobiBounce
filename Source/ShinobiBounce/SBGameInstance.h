@@ -53,7 +53,7 @@ public:
 	void SetMusicVolume(float NewVolume);
 	
 	/**
-	 * Returns MusicVolume. For UI
+	 * @return MusicVolume. For UI
 	 */
 	UFUNCTION(BlueprintPure, Category=Audio)
 	float GetMusicVolume() const;

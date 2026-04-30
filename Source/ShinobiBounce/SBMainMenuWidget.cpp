@@ -3,6 +3,7 @@
 
 #include "SBMainMenuWidget.h"
 
+#include "SBGameInstance.h"
 #include "SBOptionsMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,6 +16,19 @@ void USBMainMenuWidget::NativeConstruct()
 	PlayButton->OnClicked.AddDynamic(this, &USBMainMenuWidget::OnPlayClicked);
 	OptionsButton->OnClicked.AddDynamic(this, &USBMainMenuWidget::OnOptionsClicked);
 	ExitButton->OnClicked.AddDynamic(this, &USBMainMenuWidget::OnExitClicked);
+	
+	
+	if (APlayerController* PC = GetOwningPlayer())
+	{
+		PC->bShowMouseCursor = true;
+		FInputModeUIOnly InputMode;
+		PC->SetInputMode(InputMode);
+	}
+	
+	if (USBGameInstance* GI = Cast<USBGameInstance>(GetGameInstance()))
+	{
+		GI->PlayMenuMusic();
+	}
 }
 
 void USBMainMenuWidget::OnPlayClicked()
