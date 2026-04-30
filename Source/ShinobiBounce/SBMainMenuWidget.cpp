@@ -33,7 +33,24 @@ void USBMainMenuWidget::NativeConstruct()
 
 void USBMainMenuWidget::OnPlayClicked()
 {
-	UGameplayStatics::OpenLevel(this, FName("BasicOpenWorld"));
+	
+	// Prevent Double triggers
+	PlayButton->SetIsEnabled(false);
+	OptionsButton->SetIsEnabled(false);
+	ExitButton->SetIsEnabled(false);
+	
+	if (PlayPressedAnim)
+	{
+		FWidgetAnimationDynamicEvent FinishEvent;
+		FinishEvent.BindDynamic(this, &USBMainMenuWidget::OnPlayAnimationFinished);
+		BindToAnimationFinished(PlayPressedAnim, FinishEvent);
+		
+		PlayAnimation(PlayPressedAnim);
+	}
+	else
+	{
+		OnPlayAnimationFinished();
+	}
 }
 
 void USBMainMenuWidget::OnOptionsClicked()
@@ -51,4 +68,9 @@ void USBMainMenuWidget::OnExitClicked()
 		EQuitPreference::Quit,
 		true
 		);
+}
+
+void USBMainMenuWidget::OnPlayAnimationFinished()
+{
+	UGameplayStatics::OpenLevel(this, PlayLevelName);
 }

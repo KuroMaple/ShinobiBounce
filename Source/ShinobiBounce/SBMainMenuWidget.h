@@ -28,9 +28,18 @@ class SHINOBIBOUNCE_API USBMainMenuWidget : public UUserWidget
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> ExitButton;
 	
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> PlayPressedAnim;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Levels)
+	FName PlayLevelName = TEXT("BasicOpenWorld");
+	
+	
 	virtual void NativeConstruct() override;
 	
 	UFUNCTION() void OnPlayClicked();
 	UFUNCTION() void OnOptionsClicked();
 	UFUNCTION() void OnExitClicked();
+	
+	UFUNCTION() void OnPlayAnimationFinished();
 };
