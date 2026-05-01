@@ -43,18 +43,25 @@ class SHINOBIBOUNCE_API USBMainMenuWidget : public UUserWidget
 	struct FHoverButton
 	{
 		TObjectPtr<UButton> Button;
-		FHoverState State;
+		FHoverState HoverState;                         
+		FHoverState PressState;                         
 		FVector2D BaseScale = FVector2D(1.f, 1.f);
 	};
 
 	TArray<FHoverButton> HoverButtons;
-	
-	
+
+
 	UPROPERTY(EditDefaultsOnly, Category=Animation)
 	float HoverLerpSpeed = 8.f;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category=Animation)
 	float HoverScale = 1.1f;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Animation)
+	float PressLerpSpeed = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, Category=Animation)
+	float PressScale = 0.80f;
 	
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -67,12 +74,20 @@ class SHINOBIBOUNCE_API USBMainMenuWidget : public UUserWidget
 	UFUNCTION() void OnPlayAnimationFinished();
 	
 	void SetHoverTarget(UButton* Button, float Target);
+	void SetPressTarget(UButton* Button, float Target);    
 	void RegisterHoverButton(UButton* Button);
-	
+
 	UFUNCTION() void OnPlayHovered();
 	UFUNCTION() void OnPlayUnhovered();
 	UFUNCTION() void OnOptionsHovered();
 	UFUNCTION() void OnOptionsUnhovered();
 	UFUNCTION() void OnExitHovered();
 	UFUNCTION() void OnExitUnhovered();
+	
+	UFUNCTION() void OnPlayPressed();
+	UFUNCTION() void OnPlayReleased();
+	UFUNCTION() void OnOptionsPressed();
+	UFUNCTION() void OnOptionsReleased();
+	UFUNCTION() void OnExitPressed();
+	UFUNCTION() void OnExitReleased();
 };
