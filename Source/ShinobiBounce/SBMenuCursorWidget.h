@@ -18,11 +18,23 @@ class SHINOBIBOUNCE_API USBMenuCursorWidget : public UUserWidget
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UImage> CursorImage;
 	
+	UPROPERTY(EditDefaultsOnly, Category=Audio)
+	TObjectPtr<USoundBase> ClickSFX;
+	
 	UPROPERTY(EditDefaultsOnly, Category=Animation)
 	float ClickScale = 0.55f;
 	
 	UPROPERTY(EditDefaultsOnly, Category=Animation)
 	float ClickLerpSpeed = 25.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Animation)
+	float ClickRotationDegrees = -16.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Animation)
+	float ClickImpulseDecay = 6.f;
+	
+	bool bWasDownLastTick = false;
+	float ClickImpulse = 0.f;
 	
 	float ClickCurrent = 0.f;
 	float ClickTarget = 0.f;
