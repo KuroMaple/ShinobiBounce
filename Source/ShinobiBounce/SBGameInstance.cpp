@@ -93,14 +93,10 @@ void USBGameInstance::SetTrackIndex(EMusicType Type, int32 NewIndex)
 {
 	switch (Type)
 	{
-		case EMusicType::Idle:
-			CurrentIdleTrackIndex = NewIndex;
-		case EMusicType::Fight:
-			CurrentFightTrackIndex = NewIndex;
-		case EMusicType::Ending:
-			CurrentEndingTrackIndex = NewIndex;
-		default:
-			checkNoEntry();
+	case EMusicType::Idle:   CurrentIdleTrackIndex   = NewIndex; break;
+	case EMusicType::Fight:  CurrentFightTrackIndex  = NewIndex; break;
+	case EMusicType::Ending: CurrentEndingTrackIndex = NewIndex; break;
+	default: checkNoEntry();
 	}
 }
 
