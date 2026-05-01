@@ -14,8 +14,8 @@ I wanted to explore how far emotion and player experience can be pushed, even in
 This repository contains the **source code only** for the project.
 Assets and full project files are not included.
 
-## Menu Demo
-[*(Demo)*](https://youtu.be/UiGc2y-Y3nY)
-
+## Menu Demo (Click to YouTube)
+[![Watch the Demo](https://github.com/user-attachments/assets/b94c0a00-d32f-4dde-a76a-10b7ad95b701
+)](https://youtu.be/UiGc2y-Y3nY)
 ---
 Built with the goal of making Naruto fans feel something.
