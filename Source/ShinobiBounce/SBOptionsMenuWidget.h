@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SBGameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "SBOptionsMenuWidget.generated.h"
+
 
 class USBGameInstance;
 class UButton;
@@ -20,33 +22,37 @@ class SHINOBIBOUNCE_API USBOptionsMenuWidget : public UUserWidget
 	UPROPERTY()
 	TObjectPtr<USBGameInstance> GI;
 	
-	// Cached index
-	int32 OriginalTrackIndex = 0;
+	int32 OriginalIdleIndex = 0;
+	int32 OriginalFightIndex = 0;
+	int32 OriginalEndingIndex = 0;
 	
-	// Current Preview index
-	int32 PreviewTrackIndex = 0;
-	
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UButton> NextTrackButton;
-	
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UButton> PrevTrackButton;
-	
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UButton> ApplyButton;
-	
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UButton> BackButton;
-	
-	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UTextBlock> TrackNameText;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> NextIdleTrackButton;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> PrevIdleTrackButton;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> IdleTrackNameText;
+
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> NextFightTrackButton;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> PrevFightTrackButton;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> FightTrackNameText;
+
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> NextEndingTrackButton;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> PrevEndingTrackButton;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UTextBlock> EndingTrackNameText;
+
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> ApplyButton;
+	UPROPERTY(meta=(BindWidget)) TObjectPtr<UButton> BackButton;
 	
 	virtual void NativeConstruct() override;
 	
-	UFUNCTION() void OnNextTrackClicked();
-	UFUNCTION() void OnPrevTrackClicked();
+	UFUNCTION() void OnNextIdleTrackClicked();
+	UFUNCTION() void OnPrevIdleTrackClicked();
+	UFUNCTION() void OnNextFightTrackClicked();
+	UFUNCTION() void OnPrevFightTrackClicked();
+	UFUNCTION() void OnNextEndingTrackClicked();
+	UFUNCTION() void OnPrevEndingTrackClicked();
+
 	UFUNCTION() void OnApplyClicked();
 	UFUNCTION() void OnBackClicked();
 	
-	void RefreshTrackLabel();
+	void Cycle(EMusicType Type, int32 Direction);
+	void RefreshLabel(EMusicType Type);
 };

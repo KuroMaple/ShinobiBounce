@@ -14,46 +14,95 @@ void USBOptionsMenuWidget::NativeConstruct()
 	GI = Cast<USBGameInstance>(GetGameInstance());
 	if (!GI) return;
 	
-	OriginalTrackIndex = GI->GetCurrentTrackIndex();
-	PreviewTrackIndex = OriginalTrackIndex;
+	OriginalIdleIndex   = GI->GetCurrentTrackIndex(EMusicType::Idle);
+	OriginalFightIndex  = GI->GetCurrentTrackIndex(EMusicType::Fight);
+	OriginalEndingIndex = GI->GetCurrentTrackIndex(EMusicType::Ending);
 	
-	NextTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnNextTrackClicked);
-	PrevTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnPrevTrackClicked);
+	
+	NextIdleTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnNextIdleTrackClicked);
+	PrevIdleTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnPrevIdleTrackClicked);
+	NextFightTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnNextFightTrackClicked);
+	PrevFightTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnPrevFightTrackClicked);
+	NextEndingTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnNextEndingTrackClicked);
+	PrevEndingTrackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnPrevEndingTrackClicked);
+	
 	ApplyButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnApplyClicked);
 	BackButton->OnClicked.AddDynamic(this, &USBOptionsMenuWidget::OnBackClicked);
 	
-	RefreshTrackLabel();
+	RefreshLabel(EMusicType::Idle);
+	RefreshLabel(EMusicType::Fight);
+	RefreshLabel(EMusicType::Ending);
 }
 
-void USBOptionsMenuWidget::OnNextTrackClicked()
+void USBOptionsMenuWidget::OnNextIdleTrackClicked()
 {
-	PreviewTrackIndex = (PreviewTrackIndex + 1) % GI->GetTrackCount();
-	GI->PlayTrack(PreviewTrackIndex);
-	RefreshTrackLabel();
+	Cycle(EMusicType::Idle, +1);
 }
 
-void USBOptionsMenuWidget::OnPrevTrackClicked()
+void USBOptionsMenuWidget::OnPrevIdleTrackClicked()
 {
-	PreviewTrackIndex = (PreviewTrackIndex - 1 + GI->GetTrackCount()) % GI->GetTrackCount();
-	GI->PlayTrack(PreviewTrackIndex);
-	RefreshTrackLabel();
+	Cycle(EMusicType::Idle, -1);
+}
+
+void USBOptionsMenuWidget::OnNextFightTrackClicked()
+{
+	Cycle(EMusicType::Fight, +1);
+}
+
+void USBOptionsMenuWidget::OnPrevFightTrackClicked()
+{
+	Cycle(EMusicType::Fight, -1);
+}
+
+void USBOptionsMenuWidget::OnNextEndingTrackClicked()
+{
+	Cycle(EMusicType::Ending, +1);
+}
+
+void USBOptionsMenuWidget::OnPrevEndingTrackClicked()
+{
+	Cycle(EMusicType::Ending, -1);
 }
 
 void USBOptionsMenuWidget::OnApplyClicked()
 {
+	GI->PlayTrack(EMusicType::Idle, GI->GetCurrentTrackIndex(EMusicType::Idle));
 	RemoveFromParent();
 }
 
 void USBOptionsMenuWidget::OnBackClicked()
 {
-	if (OriginalTrackIndex != PreviewTrackIndex)
-	{
-		GI->PlayTrack(OriginalTrackIndex);	
-	}
+	GI->SetTrackIndex(EMusicType::Idle,   OriginalIdleIndex);
+	GI->SetTrackIndex(EMusicType::Fight,  OriginalFightIndex);
+	GI->SetTrackIndex(EMusicType::Ending, OriginalEndingIndex);
+
+	GI->PlayTrack(EMusicType::Idle, OriginalIdleIndex);
+
 	RemoveFromParent();
 }
 
-void USBOptionsMenuWidget::RefreshTrackLabel()
+void USBOptionsMenuWidget::Cycle(EMusicType Type, int32 Direction)
 {
-	TrackNameText->SetText(GI->GetTrackDisplayName(PreviewTrackIndex));
+	const int32 Count = GI->GetTrackCount(Type);
+	if (Count == 0) return;
+
+	const int32 Current = GI->GetCurrentTrackIndex(Type);
+	const int32 NewIndex = (Current + Direction + Count) % Count;
+	GI->PlayTrack(Type, NewIndex);
+	RefreshLabel(Type);
 }
+
+void USBOptionsMenuWidget::RefreshLabel(EMusicType Type)
+{
+	if (!GI) return;
+
+	const FText Name = GI->GetTrackDisplayName(Type, GI->GetCurrentTrackIndex(Type));
+
+	switch (Type)
+	{
+		case EMusicType::Idle:   if (IdleTrackNameText)   IdleTrackNameText->SetText(Name);   break;
+		case EMusicType::Fight:  if (FightTrackNameText)  FightTrackNameText->SetText(Name);  break;
+		case EMusicType::Ending: if (EndingTrackNameText) EndingTrackNameText->SetText(Name); break;
+	}
+}
+

@@ -7,47 +7,53 @@
 #include "Kismet/GameplayStatics.h"
 
 
-void USBGameInstance::PlayTrack(int32 Index)
+void USBGameInstance::PlayTrack(EMusicType Type, int32 Index)
 {
-	if (!IdleTracks.IsValidIndex(Index) || !IdleTracks[Index].Sound) return;
 	
-	StopMenuMusic();
+	const TArray<FSBTrack>& Tracks = GetTracks(Type);
+	if (!Tracks.IsValidIndex(Index) || !Tracks[Index].Sound) return;
 	
-	MenuMusicComponent = UGameplayStatics::SpawnSound2D(
+	StopCurrentMusic();
+	
+	const bool bPersistAcrossLevels = (Type == EMusicType::Idle); // Only idle music should persist everywhere
+	CurrentMusicComponent = UGameplayStatics::SpawnSound2D(
 		this,
-		IdleTracks[Index].Sound,
+		Tracks[Index].Sound,
 		MusicVolume,
 		1.0f,
 		0.0f,
 		nullptr,
-		true,
+		bPersistAcrossLevels,
 		true
 		);
 	
-	CurrentTrackIndex = Index;
-}
-
-void USBGameInstance::PlayMenuMusic()
-{
-	if (MenuMusicComponent && MenuMusicComponent->IsPlaying()) return;
-	PlayTrack(CurrentTrackIndex);
-	
-}
-
-void USBGameInstance::StopMenuMusic()
-{
-	if (MenuMusicComponent)
+	switch (Type)
 	{
-		MenuMusicComponent->Stop();
+		case EMusicType::Idle:   CurrentIdleTrackIndex   = Index; break;
+		case EMusicType::Fight:  CurrentFightTrackIndex  = Index; break;
+		case EMusicType::Ending: CurrentEndingTrackIndex = Index; break;
+	}
+}
+
+void USBGameInstance::PlayIdleMusic()
+{
+	PlayTrack(EMusicType::Idle, CurrentIdleTrackIndex);
+}
+
+void USBGameInstance::StopCurrentMusic()
+{
+	if (CurrentMusicComponent)
+	{
+		CurrentMusicComponent->Stop();
 	}
 }
 
 void USBGameInstance::SetMusicVolume(float NewVolume)
 {
 	MusicVolume = FMath::Clamp(NewVolume, 0.0f, 1.0f);
-	if (MenuMusicComponent)
+	if (CurrentMusicComponent)
 	{
-		MenuMusicComponent->SetVolumeMultiplier(MusicVolume);
+		CurrentMusicComponent->SetVolumeMultiplier(MusicVolume);
 	}
 }
 
@@ -56,17 +62,60 @@ float USBGameInstance::GetMusicVolume() const
 	return MusicVolume;
 }
 
-int32 USBGameInstance::GetCurrentTrackIndex() const
+int32 USBGameInstance::GetCurrentTrackIndex(EMusicType Type) const
 {
-	return CurrentTrackIndex;
+	switch (Type)
+	{
+	case EMusicType::Idle:
+		return CurrentIdleTrackIndex;
+	case EMusicType::Fight:
+		return CurrentFightTrackIndex;
+	case EMusicType::Ending:
+		return CurrentEndingTrackIndex;
+	default:
+		checkNoEntry();
+		return CurrentIdleTrackIndex;
+	}
 }
 
-FText USBGameInstance::GetTrackDisplayName(int32 Index) const
+FText USBGameInstance::GetTrackDisplayName(EMusicType Type, int32 Index) const
 {
-	return IdleTracks.IsValidIndex(Index) ? IdleTracks[Index].DisplayName : FText::GetEmpty();
+	const TArray<FSBTrack>& Tracks = GetTracks(Type);
+	return Tracks.IsValidIndex(Index) ? Tracks[Index].DisplayName : FText::GetEmpty();
 }
 
-int32 USBGameInstance::GetTrackCount() const
+int32 USBGameInstance::GetTrackCount(EMusicType Type) const
 {
-	return IdleTracks.Num();
+	return GetTracks(Type).Num();
+}
+
+void USBGameInstance::SetTrackIndex(EMusicType Type, int32 NewIndex)
+{
+	switch (Type)
+	{
+		case EMusicType::Idle:
+			CurrentIdleTrackIndex = NewIndex;
+		case EMusicType::Fight:
+			CurrentFightTrackIndex = NewIndex;
+		case EMusicType::Ending:
+			CurrentEndingTrackIndex = NewIndex;
+		default:
+			checkNoEntry();
+	}
+}
+
+const TArray<FSBTrack>& USBGameInstance::GetTracks(EMusicType Type) const
+{
+	switch (Type)
+	{
+		case EMusicType::Idle:
+			return IdleTracks;
+		case EMusicType::Fight:
+			return FightTracks;
+		case EMusicType::Ending:
+			return EndingTracks; 
+		default:
+			checkNoEntry();
+			return IdleTracks;
+	}
 }

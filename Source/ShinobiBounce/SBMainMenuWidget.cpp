@@ -62,7 +62,7 @@ void USBMainMenuWidget::NativeConstruct()
 	
 	if (USBGameInstance* GI = Cast<USBGameInstance>(GetGameInstance()))
 	{
-		GI->PlayMenuMusic();
+		GI->PlayIdleMusic();
 	}
 }
 

@@ -9,15 +9,23 @@
 class USoundBase;
 class UAudioComponent;
 
+UENUM(BlueprintType)
+enum class EMusicType : uint8
+{
+	Idle,
+	Fight,
+	Ending
+};
+
 USTRUCT(BlueprintType)
-struct FIdleTrack
+struct FSBTrack
 {
 	GENERATED_BODY()
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Audio)
 	TObjectPtr<USoundBase> Sound;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Audio)
-	FText DisplayName;	
+	FText DisplayName;
 };
 
 /**
@@ -32,19 +40,19 @@ public:
 	 * Called by options menu arrows, used to preview tracks 
 	 */
 	UFUNCTION(BlueprintCallable, Category=Audio)
-	void PlayTrack(int32 Index);
+	void PlayTrack(EMusicType Type, int32 Index);
 	
 	/**
 	 * Plays CurrentTrackIndex if nothing is already playing
 	 */
 	UFUNCTION(BlueprintCallable, Category=Audio)
-	void PlayMenuMusic();
+	void PlayIdleMusic();
 	
 	/**
 	 * Stops current audio components playback
 	 */
 	UFUNCTION(BlueprintCallable, Category=Audio)
-	void StopMenuMusic();
+	void StopCurrentMusic();
 	
 	/**
 	 * Controls audio component volume via private state
@@ -62,29 +70,41 @@ public:
 	 * @return CurrentTrackIndex. For UI
 	 */
 	UFUNCTION(BlueprintPure, Category=Audio)
-	int32 GetCurrentTrackIndex() const;
-	
+	int32 GetCurrentTrackIndex(EMusicType Type) const;
 	
 	/**
 	 * @return track display name
 	 */
 	UFUNCTION(BlueprintPure, Category=Audio)
-	FText GetTrackDisplayName(int32 Index) const;
+	FText GetTrackDisplayName(EMusicType Type, int32 Index) const;
 
 	/**
 	 * @return Number of tracks
 	 */
 	UFUNCTION(BlueprintPure, Category=Audio)
-	int32 GetTrackCount() const;
+	int32 GetTrackCount(EMusicType Type) const;
+	
+	UFUNCTION()
+	void SetTrackIndex(EMusicType Type, int32 NewIndex);
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Audio)
-	TArray<FIdleTrack> IdleTracks;
+	TArray<FSBTrack> IdleTracks;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Audio)
+	TArray<FSBTrack> FightTracks;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Audio)
+	TArray<FSBTrack> EndingTracks;
 private:
 	
 	UPROPERTY()
-	TObjectPtr<UAudioComponent> MenuMusicComponent;
+	TObjectPtr<UAudioComponent> CurrentMusicComponent;
 	
 	float MusicVolume = 1.0f;
-	int32 CurrentTrackIndex = 0;
+	int32 CurrentIdleTrackIndex = 0;
+	int32 CurrentFightTrackIndex = 0;
+	int32 CurrentEndingTrackIndex = 0;
+	
+	const TArray<FSBTrack>& GetTracks(EMusicType Type) const;
 };
