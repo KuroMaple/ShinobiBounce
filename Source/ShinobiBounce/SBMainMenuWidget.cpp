@@ -9,6 +9,20 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+void USBMainMenuWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	
+	for (FHoverButton& Entry : HoverButtons)
+	{
+		Entry.State.Current = FMath::FInterpTo(
+			Entry.State.Current, Entry.State.Target, InDeltaTime, HoverLerpSpeed);
+
+		const float Multiplier = FMath::Lerp(1.f, HoverScale, Entry.State.Current);
+		Entry.Button->SetRenderScale(FVector2D(Entry.BaseScale * Multiplier));
+	}
+}
+
 void USBMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -17,6 +31,16 @@ void USBMainMenuWidget::NativeConstruct()
 	OptionsButton->OnClicked.AddDynamic(this, &USBMainMenuWidget::OnOptionsClicked);
 	ExitButton->OnClicked.AddDynamic(this, &USBMainMenuWidget::OnExitClicked);
 	
+	RegisterHoverButton(PlayButton);
+	RegisterHoverButton(OptionsButton);
+	RegisterHoverButton(ExitButton);
+
+	PlayButton->OnHovered.AddDynamic(this, &USBMainMenuWidget::OnPlayHovered);
+	PlayButton->OnUnhovered.AddDynamic(this, &USBMainMenuWidget::OnPlayUnhovered);
+	OptionsButton->OnHovered.AddDynamic(this, &USBMainMenuWidget::OnOptionsHovered);
+	OptionsButton->OnUnhovered.AddDynamic(this, &USBMainMenuWidget::OnOptionsUnhovered);
+	ExitButton->OnHovered.AddDynamic(this, &USBMainMenuWidget::OnExitHovered);
+	ExitButton->OnUnhovered.AddDynamic(this, &USBMainMenuWidget::OnExitUnhovered);
 	
 	if (APlayerController* PC = GetOwningPlayer())
 	{
@@ -74,3 +98,27 @@ void USBMainMenuWidget::OnPlayAnimationFinished()
 {
 	UGameplayStatics::OpenLevel(this, PlayLevelName);
 }
+
+void USBMainMenuWidget::SetHoverTarget(UButton* Button, float Target)
+{
+	for (FHoverButton & Entry : HoverButtons)
+	{
+		if (Entry.Button == Button) { Entry.State.Target = Target; return; }
+	}
+}
+
+void USBMainMenuWidget::RegisterHoverButton(UButton* Button)
+{
+	if (!Button) return;
+	FHoverButton Entry;
+	Entry.Button = Button;
+	Entry.BaseScale = Button->GetRenderTransform().Scale; // Capture Blueprint scale
+	HoverButtons.Add(Entry);
+}
+
+void USBMainMenuWidget::OnPlayHovered()      { SetHoverTarget(PlayButton, 1.f); }
+void USBMainMenuWidget::OnPlayUnhovered()    { SetHoverTarget(PlayButton, 0.f); }
+void USBMainMenuWidget::OnOptionsHovered()   { SetHoverTarget(OptionsButton, 1.f); }
+void USBMainMenuWidget::OnOptionsUnhovered() { SetHoverTarget(OptionsButton, 0.f); }
+void USBMainMenuWidget::OnExitHovered()      { SetHoverTarget(ExitButton, 1.f); }
+void USBMainMenuWidget::OnExitUnhovered()    { SetHoverTarget(ExitButton, 0.f); }
