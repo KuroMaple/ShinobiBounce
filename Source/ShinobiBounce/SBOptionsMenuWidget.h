@@ -91,6 +91,18 @@ class SHINOBIBOUNCE_API USBOptionsMenuWidget : public UUserWidget
 	UPROPERTY(EditDefaultsOnly, Category=Animation)
 	FLinearColor HoverTint = FLinearColor(1.2f, 1.1f, 0.7f, 1.f);
 
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> ApplyButtonLabel;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> BackButtonLabel;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Animation)
+	FLinearColor LabelRestColor = FLinearColor::White;
+
+	UPROPERTY(EditDefaultsOnly, Category=Animation)
+	FLinearColor LabelHoverColor = FLinearColor(1.f, 0.85f, 0.f, 1.f);  
+	
 	void RegisterHoverButton(UButton* Button);
 	void SetHoverTarget(UButton* Button, float Target);
 	void SetPressTarget(UButton* Button, float Target);

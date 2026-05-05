@@ -128,13 +128,31 @@ void USBOptionsMenuWidget::SetPressTarget(UButton* Button, float Target)
 	}
 }
 
-void USBOptionsMenuWidget::OnApplyHovered()    { SetHoverTarget(ApplyButton, 1.f); }
-void USBOptionsMenuWidget::OnApplyUnhovered()  { SetHoverTarget(ApplyButton, 0.f); SetPressTarget(ApplyButton, 0.f); }
+void USBOptionsMenuWidget::OnApplyHovered()
+{
+	SetHoverTarget(ApplyButton, 1.f);
+	if (ApplyButtonLabel) ApplyButtonLabel->SetColorAndOpacity(FSlateColor(LabelHoverColor));
+}
+void USBOptionsMenuWidget::OnApplyUnhovered()
+{
+	SetHoverTarget(ApplyButton, 0.f); 
+	SetPressTarget(ApplyButton, 0.f);
+	if (ApplyButtonLabel) ApplyButtonLabel->SetColorAndOpacity(FSlateColor(LabelRestColor));
+}
 void USBOptionsMenuWidget::OnApplyPressed()    { SetPressTarget(ApplyButton, 1.f); }
 void USBOptionsMenuWidget::OnApplyReleased()   { SetPressTarget(ApplyButton, 0.f); }
 
-void USBOptionsMenuWidget::OnBackHovered()     { SetHoverTarget(BackButton, 1.f); }
-void USBOptionsMenuWidget::OnBackUnhovered()   { SetHoverTarget(BackButton, 0.f); SetPressTarget(BackButton, 0.f); }
+void USBOptionsMenuWidget::OnBackHovered()
+{
+	SetHoverTarget(BackButton, 1.f);
+	if (BackButtonLabel) BackButtonLabel->SetColorAndOpacity(FSlateColor(LabelHoverColor));
+}
+void USBOptionsMenuWidget::OnBackUnhovered()
+{
+	SetHoverTarget(BackButton, 0.f); 
+	SetPressTarget(BackButton, 0.f);
+	if (BackButtonLabel) BackButtonLabel->SetColorAndOpacity(FSlateColor(LabelRestColor));
+}
 void USBOptionsMenuWidget::OnBackPressed()     { SetPressTarget(BackButton, 1.f); }
 void USBOptionsMenuWidget::OnBackReleased()    { SetPressTarget(BackButton, 0.f); }
 
