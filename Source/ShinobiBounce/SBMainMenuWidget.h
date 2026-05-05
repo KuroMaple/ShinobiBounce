@@ -32,7 +32,7 @@ class SHINOBIBOUNCE_API USBMainMenuWidget : public UUserWidget
 	TObjectPtr<UWidgetAnimation> PlayPressedAnim;
 	
 	UPROPERTY(EditDefaultsOnly, Category=Levels)
-	FName PlayLevelName = TEXT("BasicOpenWorld");
+	FName PlayLevelName = TEXT("BasicPong");
 
 	struct FHoverState
 	{
