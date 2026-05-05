@@ -4,10 +4,10 @@
 #include "PongGameMode.h"
 
 #include "Paddle.h"
+#include "SBPlayerController.h"
 
 APongGameMode::APongGameMode()
 {
 	DefaultPawnClass = APaddle::StaticClass();
-	PlayerControllerClass = APlayerController::StaticClass();
-	UE_LOG(LogTemp, Warning, TEXT("PongGameMode constructed"));
+	PlayerControllerClass = ASBPlayerController::StaticClass();
 }
