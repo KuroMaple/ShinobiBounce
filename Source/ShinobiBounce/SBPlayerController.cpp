@@ -17,5 +17,6 @@ void ASBPlayerController::BeginPlay()
 		SetViewTarget(PongCameraActor);
 	}
 	
+	SetControlRotation(FRotator(0, 0, 0));
 
 }

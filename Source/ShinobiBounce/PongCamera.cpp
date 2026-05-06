@@ -7,6 +7,5 @@
 
 APongCamera::APongCamera()
 {
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	RootComponent = Camera;
+	
 }

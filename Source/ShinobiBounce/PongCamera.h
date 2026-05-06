@@ -16,7 +16,5 @@ class SHINOBIBOUNCE_API APongCamera : public ACameraActor
 	
 	APongCamera();
 	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCameraComponent> Camera;
 	
 };
