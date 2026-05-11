@@ -9,6 +9,10 @@ void ASBPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	FInputModeGameOnly GameInput;
+	SetInputMode(GameInput);
+	bShowMouseCursor = false;
+	
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(this, APongCamera::StaticClass(), FoundActors);
 	if (FoundActors.Num() > 0)

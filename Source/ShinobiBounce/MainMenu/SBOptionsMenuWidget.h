@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SBGameInstance.h"
+#include "ShinobiBounce/SBGameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "SBOptionsMenuWidget.generated.h"
 

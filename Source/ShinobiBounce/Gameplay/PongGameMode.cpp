@@ -4,7 +4,7 @@
 #include "PongGameMode.h"
 
 #include "Paddle.h"
-#include "SBPlayerController.h"
+#include "ShinobiBounce/SBPlayerController.h"
 
 APongGameMode::APongGameMode()
 {

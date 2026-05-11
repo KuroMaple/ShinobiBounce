@@ -2,8 +2,7 @@
 
 
 #include "SBOptionsMenuWidget.h"
-
-#include "SBGameInstance.h"
+#include "ShinobiBounce/SBGameInstance.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 

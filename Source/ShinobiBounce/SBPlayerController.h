@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PongCamera.h"
+#include "Gameplay/PongCamera.h"
 #include "GameFramework/PlayerController.h"
 #include "SBPlayerController.generated.h"
 

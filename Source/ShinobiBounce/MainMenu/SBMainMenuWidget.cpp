@@ -3,7 +3,7 @@
 
 #include "SBMainMenuWidget.h"
 
-#include "SBGameInstance.h"
+#include "ShinobiBounce/SBGameInstance.h"
 #include "SBOptionsMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"

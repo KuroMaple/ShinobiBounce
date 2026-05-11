@@ -34,7 +34,8 @@ void APaddle::BeginPlay()
 		{
 			// Add the context with a priority (higher values take precedence)
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			UE_LOG(LogTemp, Error, TEXT("IMC Added"));
+			UE_LOG(LogTemp, Warning, TEXT("IMC Added"));
+			UE_LOG(LogTemp, Warning, TEXT("Paddle BeginPlay: %s, Controller=%s"), *GetName(), GetController() ? *GetController()->GetName() : TEXT("NONE"));
 		}
 		else
 		{
@@ -45,6 +46,7 @@ void APaddle::BeginPlay()
 
 void APaddle::Move(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Move: %f"), Value.Get<float>());
 	const float AxisValue = Value.Get<float>();
 	const float Delta = AxisValue * MoveSpeed * GetWorld()->GetDeltaSeconds();
 	const FVector Movement(0.f, Delta, 0.f);
@@ -62,7 +64,7 @@ void APaddle::Tick(float DeltaTime)
 void APaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
+	UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent on %s"), *GetName());
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MovePaddleAction, ETriggerEvent::Triggered, this, &APaddle::Move);

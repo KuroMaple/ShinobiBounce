@@ -52,14 +52,6 @@ void AProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& Impact
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	ProjectileMesh->AddLocalRotation(FRotator(0.f, 0.5f, 0.f));
-	// const FVector Velocity = ProjectileMovement->Velocity;
-	// if (!Velocity.IsNearlyZero())
-	// {
-	// 	FRotator BaseRotation = Velocity.Rotation();      // face velocity
-	// 	BaseRotation.Yaw += 180.f;                        // add your offset
-	// 	SetActorRotation(BaseRotation);
-	// }
-
+	ProjectileMesh->AddLocalRotation(FRotator(0.f, 1.f, 0.f));
 }
 
