@@ -5,6 +5,7 @@
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AProjectile::AProjectile()
 {
@@ -14,7 +15,7 @@ AProjectile::AProjectile()
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
 	RootComponent = CollisionBox;
 	CollisionBox->SetCollisionProfileName(TEXT("BlockAllDynamic"));
-	CollisionBox->SetBoxExtent(FVector(40.f, 20.f, 5.f));
+	CollisionBox->SetBoxExtent(FVector(40.f, 7.f, 5.f));
 	
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 	ProjectileMesh->SetupAttachment(RootComponent);
@@ -44,7 +45,10 @@ void AProjectile::BeginPlay()
 
 void AProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Bounce!"));
+	if (BounceFromPaddleSfx)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, BounceFromPaddleSfx, ImpactResult.ImpactPoint);
+	}
 }
 
 

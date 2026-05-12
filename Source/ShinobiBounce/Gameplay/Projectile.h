@@ -9,6 +9,7 @@
 class UBoxComponent;
 class UProjectileMovementComponent;
 class UStaticMeshComponent;
+class USoundBase;
 
 UCLASS()
 class SHINOBIBOUNCE_API AProjectile : public AActor
@@ -40,4 +41,7 @@ protected:
 	UFUNCTION()
 	void OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
 	
+private:
+	UPROPERTY(EditDefaultsOnly, Category=Audio)
+	TObjectPtr<USoundBase> BounceFromPaddleSfx;
 };

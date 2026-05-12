@@ -50,6 +50,6 @@ private:
 	float MoveSpeed = 800.f;
 	
 	UPROPERTY()
-	float MaxBounceAngle = 60.f;
+	float MaxBounceAngle = 45.f;
 	
 };
