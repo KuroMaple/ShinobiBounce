@@ -10,6 +10,7 @@
 class UInputAction;
 class UCameraComponent;
 class UInputMappingContext ;
+class AProjectile;
 
 UCLASS()
 class SHINOBIBOUNCE_API APaddle : public APawn
@@ -40,8 +41,15 @@ protected:
 	
 	void Move(const FInputActionValue& Value);
 	
+	UFUNCTION()
+	void OnHitByProjectile(UPrimitiveComponent* HitComp, 
+		AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		FVector NormalImpulse, const FHitResult& Hit);
+	
 private:
 	float MoveSpeed = 800.f;
 	
+	UPROPERTY()
+	float MaxBounceAngle = 60.f;
 	
 };
