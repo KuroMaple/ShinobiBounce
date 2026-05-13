@@ -65,6 +65,10 @@ void AProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& Impact
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	ProjectileMesh->AddLocalRotation(FRotator(0.f, 1.f, 0.f));
+	
+	// Spinning Kunai
+	const float CurrentSpeed = ProjectileMovement->Velocity.Size();
+	const float SpeedRatio = FMath::Pow(CurrentSpeed / InitialSpeed, 0.7f);
+	ProjectileMesh->AddLocalRotation(FRotator(0.f, SpeedRatio, 0.f));
 }
 

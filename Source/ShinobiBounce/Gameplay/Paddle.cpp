@@ -60,6 +60,11 @@ void APaddle::Move(const FInputActionValue& Value)
 void APaddle::OnHitByProjectile(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (FMath::Abs(Hit.ImpactNormal.Y) > FMath::Abs(Hit.ImpactNormal.X))
+	{
+		return;  // side hit — ignore
+	}
+	
 	AProjectile* Projectile = Cast<AProjectile>(OtherActor);
 	if (!Projectile) return; // Don't apply paddle physics to non projectiles
 	

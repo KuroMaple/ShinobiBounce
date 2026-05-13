@@ -47,4 +47,5 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category=Audio)
 	TObjectPtr<USoundBase> WallHitSfx;
+	
 };
