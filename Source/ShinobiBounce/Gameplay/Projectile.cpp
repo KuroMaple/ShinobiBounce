@@ -3,6 +3,7 @@
 
 #include "Projectile.h"
 
+#include "Paddle.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -45,10 +46,18 @@ void AProjectile::BeginPlay()
 
 void AProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
-	if (BounceFromPaddleSfx)
+	USoundBase* SelectedSfx = WallHitSfx;
+	if (Cast<APaddle>(ImpactResult.GetActor()))
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, BounceFromPaddleSfx, ImpactResult.ImpactPoint);
+		SelectedSfx = PaddleHitSfx;
 	}
+	
+	UGameplayStatics::PlaySoundAtLocation(
+		this, 
+		SelectedSfx, 
+		ImpactResult.ImpactPoint
+		);
+	
 }
 
 

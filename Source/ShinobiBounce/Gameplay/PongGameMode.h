@@ -14,4 +14,5 @@ class SHINOBIBOUNCE_API APongGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	APongGameMode();
+	virtual void BeginPlay() override;
 };

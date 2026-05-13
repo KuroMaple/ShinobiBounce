@@ -42,12 +42,18 @@ protected:
 	void Move(const FInputActionValue& Value);
 	
 	UFUNCTION()
-	void OnHitByProjectile(UPrimitiveComponent* HitComp, 
+	virtual void OnHitByProjectile(UPrimitiveComponent* HitComp, 
 		AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		FVector NormalImpulse, const FHitResult& Hit);
 	
-private:
+	virtual void UpdateMovement(float DeltaTime);
+	
+	virtual bool ShouldSetUpPlayerInput() const { return true; }
+	
 	float MoveSpeed = 800.f;
+	
+private:
+	
 	
 	UPROPERTY()
 	float MaxBounceAngle = 45.f;

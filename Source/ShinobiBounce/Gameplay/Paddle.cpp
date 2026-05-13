@@ -19,27 +19,29 @@ APaddle::APaddle()
 	PaddleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PaddleMesh"));
 	RootComponent = PaddleMesh;
 	
-	UE_LOG(LogTemp, Warning, TEXT("in paddle constructor"));
+	// UE_LOG(LogTemp, Warning, TEXT("in paddle constructor"));
 	
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	
 }
 
-// Called when the game starts or when spawned
 void APaddle::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	if (ShouldSetUpPlayerInput())
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
 		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+			{
+				Subsystem->AddMappingContext(DefaultMappingContext, 0);
 			
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("EnhancedInput subsystem is NULL"));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("EnhancedInput subsystem is NULL"));
+			}
 		}
 	}
 	
@@ -80,11 +82,17 @@ void APaddle::OnHitByProjectile(UPrimitiveComponent* HitComp, AActor* OtherActor
 	Projectile->ProjectileMovement->Velocity = FVector(NewX, NewY, 0.f);
 }
 
+void APaddle::UpdateMovement(float DeltaTime)
+{
+	// Base left empty in parent
+}
+
 // Called every frame
 void APaddle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	// UE_LOG(LogTemp, Warning, TEXT("%s Tick"), *GetName());
+	UpdateMovement(DeltaTime);
 }
 
 // Called to bind functionality to input

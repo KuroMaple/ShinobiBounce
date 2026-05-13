@@ -43,5 +43,8 @@ protected:
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category=Audio)
-	TObjectPtr<USoundBase> BounceFromPaddleSfx;
+	TObjectPtr<USoundBase> PaddleHitSfx;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Audio)
+	TObjectPtr<USoundBase> WallHitSfx;
 };
