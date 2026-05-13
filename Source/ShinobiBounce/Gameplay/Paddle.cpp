@@ -4,6 +4,7 @@
 #include "Paddle.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "PongGameMode.h"
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 // Sets default values
@@ -80,6 +81,12 @@ void APaddle::OnHitByProjectile(UPrimitiveComponent* HitComp, AActor* OtherActor
 	const float NewY = FMath::Sin(AngleRadians) * CurrentProjectileSpeed;
 	
 	Projectile->ProjectileMovement->Velocity = FVector(NewX, NewY, 0.f);
+	
+	// Update projectile speed
+	if (APongGameMode* GM = GetWorld()->GetAuthGameMode<APongGameMode>())
+	{
+		GM->OnPaddleHit(Projectile);
+	}
 }
 
 void APaddle::UpdateMovement(float DeltaTime)

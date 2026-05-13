@@ -16,7 +16,7 @@ AProjectile::AProjectile()
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
 	RootComponent = CollisionBox;
 	CollisionBox->SetCollisionProfileName(TEXT("BlockAllDynamic"));
-	CollisionBox->SetBoxExtent(FVector(40.f, 7.f, 5.f));
+	CollisionBox->SetBoxExtent(FVector(40.f, 4.f, 3.f));
 	
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 	ProjectileMesh->SetupAttachment(RootComponent);
