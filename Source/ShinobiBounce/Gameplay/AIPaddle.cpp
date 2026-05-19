@@ -31,7 +31,6 @@ void AAIPaddle::BeginPlay()
 void AAIPaddle::UpdateMovement(float DeltaTime)
 {
 	Super::UpdateMovement(DeltaTime);
-	UE_LOG(LogTemp, Warning, TEXT("AI UpdateMovement firing"));
 	if (!IsValid(TrackedProjectile)) return;
 	
 	const float DifferenceY = TrackedProjectile->GetActorLocation().Y - GetActorLocation().Y;
