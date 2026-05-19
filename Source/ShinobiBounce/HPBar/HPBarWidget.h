@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "HPBarWidget.generated.h"
 
+class UBorder;
 class UHorizontalBox;
 class USizeBox;
 class UHPBarNibWidget;
@@ -30,13 +31,27 @@ public:
 	UPROPERTY()
 	TArray<TObjectPtr<UHPBarNibWidget>> SpawnedNibs;
 	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UBorder> HPMainBorder;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Visual)
+	TObjectPtr<UMaterialInterface> HPBorderMaterial;
+	
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> HPBorderMID;
+	
 	// Should take in Player or enemy actor to get its hp in future
 	UFUNCTION(BlueprintCallable, Category=HP)
 	void SetInitialHP(int32 HPAmount);
 	
+	UFUNCTION()
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void UpdateHP(int32 HPAmount);
 private:
 	int32 CurrentHp = 0;
-	int32 MaxHP = 0;
+	int32 MaxHP = 1000;
 	int32 HPPerNib = 250;
 	float MaxHPBarWidth = 500.f;
 	

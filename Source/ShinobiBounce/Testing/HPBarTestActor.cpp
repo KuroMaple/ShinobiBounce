@@ -21,12 +21,15 @@ void AHPBarTestActor::BeginPlay()
 	
 	if (HPBarClass)
 	{
-		UHPBarWidget* HPWidget = CreateWidget<UHPBarWidget>(GetWorld(), HPBarClass);
+		HPBarInstance = CreateWidget<UHPBarWidget>(GetWorld(), HPBarClass);
 		
-		if (HPWidget)
+		if (HPBarInstance)
 		{
-			HPWidget->AddToViewport();
-			HPWidget->SetInitialHP(1000);
+			HPBarInstance->AddToViewport();
+			HPBarInstance->SetInitialHP(CurrentHP);
+			HPBarInstance->SetAnchorsInViewport(FAnchors(0.f, 0.f));
+			HPBarInstance->SetAlignmentInViewport(FVector2D(-0.9f, -0.4f));
+			HPBarInstance->SetDesiredSizeInViewport(FVector2D(500.f, 100.f));
 		}
 	}
 	
@@ -37,5 +40,15 @@ void AHPBarTestActor::BeginPlay()
 void AHPBarTestActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	// UE_LOG(LogTemp, Warning, TEXT("Tick: CurrentHP=%d, DepletionRate=%d, HPBarValid=%s"),
+	//    CurrentHP,
+	//    HPDepletionPerSecond,
+	//    HPBarInstance ? TEXT("yes") : TEXT("no"));
+	
+	if (!HPBarInstance || CurrentHP <= 0) return;
+	
+	CurrentHP = FMath::Max(0.f, CurrentHP - HPDepletionPerSecond * DeltaTime);
+	HPBarInstance->UpdateHP(CurrentHP);
 }
 

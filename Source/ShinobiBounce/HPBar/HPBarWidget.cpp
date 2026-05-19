@@ -3,9 +3,11 @@
 
 #include "HPBarWidget.h"
 #include "HPBarNibWidget.h"
+#include "Components/Border.h"
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/SizeBox.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 void UHPBarWidget::SetInitialHP(int32 HPAmount)
 {
@@ -33,6 +35,58 @@ void UHPBarWidget::SetInitialHP(int32 HPAmount)
 	ensure(HPBarSizeBox);
 	ensure(NibContainer);
 	ensure(NibWidgetClass);
+	
+	UE_LOG(LogTemp, Warning, TEXT("SetInitialHP: MaxHP set to %d"), HPAmount);
+}
+
+void UHPBarWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	if (HPBorderMaterial && HPMainBorder)
+	{
+		HPBorderMID = UMaterialInstanceDynamic::Create(HPBorderMaterial, this);
+		if (HPBorderMID)
+		{
+			HPMainBorder->SetBrushFromMaterial(HPBorderMID);
+			HPBorderMID->SetScalarParameterValue(TEXT("Health"), 1.0);
+			UE_LOG(LogTemp, Warning, TEXT("MID created and applied to border"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("MID creation FAILED"));
+		}
+	}
+}
+
+void UHPBarWidget::UpdateHP(int32 HPAmount)
+{
+	
+	if (HPPerNib <= 0) return;
+	
+	HPAmount = FMath::Clamp(HPAmount, 0, MaxHP);
+	
+	// Update entity HP here
+	// e.g CurrentHP = HPAmount
+	
+	RefreshNibActiveStates(HPAmount);
+	
+	const int32 ActiveExtraNibs = FMath::Max(0, FMath::CeilToInt(static_cast<float>(HPAmount) / HPPerNib) - 1);
+	const int32 HPInCurrentSegment = HPAmount - (ActiveExtraNibs * HPPerNib);
+	const double SegmentRatio = static_cast<float>(HPInCurrentSegment) / HPPerNib;
+	
+	if (HPBorderMID)
+	{
+		HPBorderMID->SetScalarParameterValue(TEXT("Health"), SegmentRatio);
+		UE_LOG(LogTemp, Verbose, TEXT("Set Health scalar = %.3f"), SegmentRatio);	
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HPBorderMID is NULL during UpdateHP"));
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("UpdateHP called: HPAmount=%d, HPPerNib=%d, MaxHP=%d"),
+	   HPAmount, HPPerNib, MaxHP);
 }
 
 void UHPBarWidget::UpdateMainBarWidth(int32 HPAmount)
@@ -44,7 +98,7 @@ void UHPBarWidget::UpdateMainBarWidth(int32 HPAmount)
 		const float WidthRatio = static_cast<float>(HPAmount) / HPPerNib;
 		HPBarSizeBox->SetWidthOverride(20.f);
 		
-		// HPBarSizeBox->SetWidthOverride(MaxHPBarWidth * WidthRatio);
+		HPBarSizeBox->SetWidthOverride(MaxHPBarWidth * WidthRatio);
 	}
 	else
 	{

@@ -20,6 +20,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UHPBarWidget> HPBarClass;
 	
+	UPROPERTY()
+	TObjectPtr<UHPBarWidget> HPBarInstance;
+	
+	
+	UPROPERTY(EditDefaultsOnly, Category=Test)
+	int32 HPDepletionPerSecond = 50;
+
+	int32 CurrentHP = 750;
+	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
