@@ -4,11 +4,13 @@
 #include "AIPaddle.h"
 
 #include "Projectile.h"
+#include "ShinobiBounce/HPBar/HPBarWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 AAIPaddle::AAIPaddle()
 {
 	AutoPossessPlayer = EAutoReceiveInput::Disabled;
+	PaddleSide = EGoalSide::Right;
 }
 
 void AAIPaddle::BeginPlay()
@@ -26,6 +28,7 @@ void AAIPaddle::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Unable to find projectile"));
 	}
+	
 }
 
 void AAIPaddle::UpdateMovement(float DeltaTime)

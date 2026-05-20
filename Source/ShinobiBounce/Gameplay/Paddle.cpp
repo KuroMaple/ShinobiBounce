@@ -6,7 +6,10 @@
 #include "EnhancedInputComponent.h"
 #include "PongGameMode.h"
 #include "Projectile.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "ShinobiBounce/HPBar/HPBarWidget.h"
 // Sets default values
 APaddle::APaddle()
 {
@@ -43,10 +46,12 @@ void APaddle::BeginPlay()
 			{
 				UE_LOG(LogTemp, Error, TEXT("EnhancedInput subsystem is NULL"));
 			}
+			
 		}
 	}
-	
 	PaddleMesh->OnComponentHit.AddDynamic(this, &APaddle::OnHitByProjectile);
+	CurrentHP = MaxHP;
+	CreateHPBar();
 }
 
 void APaddle::Move(const FInputActionValue& Value)
@@ -99,6 +104,28 @@ void APaddle::UpdateMovement(float DeltaTime)
 	// Base left empty in parent
 }
 
+void APaddle::CreateHPBar()
+{
+	if (!HPBarWidgetClass)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s has no HPBarWidgetClass assigned"), *GetName());
+		return;
+	}
+	
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	if (!PC) return;
+
+	HPBar = CreateWidget<UHPBarWidget>(PC, HPBarWidgetClass);
+	if (HPBar)
+	{
+		HPBar->AddToViewport();
+		HPBar->SetInitialHP(CurrentHP);
+		HPBar->SetAnchorsInViewport(FAnchors(HPBarAnchor.X, HPBarAnchor.Y));
+		HPBar->SetAlignmentInViewport(HPBarAlignment);
+		HPBar->SetDesiredSizeInViewport(FVector2D(500.f, 100.f));
+	}
+}
+
 // Called every frame
 void APaddle::Tick(float DeltaTime)
 {
@@ -119,6 +146,19 @@ void APaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Cast to EIC FAILED — project not using Enhanced Input"));
+	}
+}
+
+void APaddle::TakeDamage(int32 Amount)
+{
+	CurrentHP = FMath::Max(0, CurrentHP - Amount);
+	if (HPBar) HPBar->UpdateHP(CurrentHP);
+	if (CurrentHP <= 0)
+	{
+		if (APongGameMode* GM = GetWorld()->GetAuthGameMode<APongGameMode>())
+		{
+			GM->OnPaddleDefeated(this);
+		}
 	}
 }
 

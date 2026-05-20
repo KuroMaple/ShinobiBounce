@@ -28,12 +28,14 @@ public:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Movement)
+	float InitialSpeed = 1000.f;
 
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, Category=Movement)
-	float InitialSpeed = 1000.f;
+	
 	
 	UPROPERTY(EditDefaultsOnly, Category=Movement)
 	FVector2D Direction = FVector2D(-1.f, 0.f);
