@@ -19,7 +19,7 @@ class SHINOBIBOUNCE_API APongGameMode : public AGameModeBase
 	APongGameMode();
 	
 	UPROPERTY(EditDefaultsOnly, Category=Difficulty)
-	float SpeedIncreasePerHit = 1.05f;
+	float SpeedIncreasePerHit = 1.25f;
 	
 	UPROPERTY(EditDefaultsOnly, Category=Difficulty)
 	float MaxSpeed = 3000.f;

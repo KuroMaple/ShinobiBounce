@@ -19,7 +19,7 @@ protected:
 	TObjectPtr<AProjectile> TrackedProjectile;
 	
 	UPROPERTY(EditDefaultsOnly, Category=AI)
-	float DeadzoneRadius = 10.f;
+	float DeadzoneRadius = 50.f;
 	
 	virtual void BeginPlay() override;
 	virtual void UpdateMovement(float DeltaTime) override;
