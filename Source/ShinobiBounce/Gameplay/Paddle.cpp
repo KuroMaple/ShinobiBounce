@@ -129,6 +129,14 @@ void APaddle::CreateHPBar()
 void APaddle::TriggerInvulnerability()
 {
 	this->PaddleMesh->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	
+	GetWorldTimerManager().SetTimer(
+		FlickerPaddleHandle,
+		this,
+		&APaddle::FlickerPaddle,
+		FlickerRate,
+		true
+	);
 	GetWorldTimerManager().SetTimer(
 		InvulnerabilityHandle, 
 		this, 
@@ -140,6 +148,13 @@ void APaddle::TriggerInvulnerability()
 void APaddle::EndInvulnerability()
 {
 	this->PaddleMesh->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
+	GetWorldTimerManager().ClearTimer(FlickerPaddleHandle);
+	this->PaddleMesh->SetVisibility(true);
+}
+
+void APaddle::FlickerPaddle()
+{
+	this->PaddleMesh->SetVisibility(!this->PaddleMesh->GetVisibleFlag());
 }
 
 // Called every frame

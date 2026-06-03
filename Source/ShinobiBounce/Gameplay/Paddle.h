@@ -79,16 +79,20 @@ protected:
 	float MoveSpeed = 800.f;
 	
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category=OnDamage)
 	float InvulnerabilityTime = 1.5;
 	
+	UPROPERTY(EditAnywhere, Category=OnDamage)
+	float FlickerRate = 0.1f;
 	UPROPERTY()
 	float MaxBounceAngle = 45.f;
 	
 	FTimerHandle InvulnerabilityHandle;
+	FTimerHandle FlickerPaddleHandle;
 	
 	void CreateHPBar();
 	
 	void TriggerInvulnerability();
 	void EndInvulnerability();
+	void FlickerPaddle();
 };
