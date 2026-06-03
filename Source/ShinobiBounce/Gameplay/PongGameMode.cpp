@@ -101,6 +101,7 @@ void APongGameMode::OnGoalHit(EGoalSide HitSide)
 	if (DamagedPaddle)
 	{
 		DamagedPaddle->TakeDamage(DamagePerHit);
+		
 	}
 	
 	ResetRally();

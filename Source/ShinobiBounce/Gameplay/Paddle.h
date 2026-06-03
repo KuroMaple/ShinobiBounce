@@ -79,11 +79,16 @@ protected:
 	float MoveSpeed = 800.f;
 	
 private:
-	
+	UPROPERTY(EditAnywhere)
+	float InvulnerabilityTime = 1.5;
 	
 	UPROPERTY()
 	float MaxBounceAngle = 45.f;
 	
+	FTimerHandle InvulnerabilityHandle;
+	
 	void CreateHPBar();
 	
+	void TriggerInvulnerability();
+	void EndInvulnerability();
 };

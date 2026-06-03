@@ -126,6 +126,22 @@ void APaddle::CreateHPBar()
 	}
 }
 
+void APaddle::TriggerInvulnerability()
+{
+	this->PaddleMesh->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	GetWorldTimerManager().SetTimer(
+		InvulnerabilityHandle, 
+		this, 
+		&APaddle::EndInvulnerability, 
+		InvulnerabilityTime, 
+		false);
+}
+
+void APaddle::EndInvulnerability()
+{
+	this->PaddleMesh->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
+}
+
 // Called every frame
 void APaddle::Tick(float DeltaTime)
 {
@@ -159,6 +175,11 @@ void APaddle::TakeDamage(int32 Amount)
 		{
 			GM->OnPaddleDefeated(this);
 		}
+	} 
+	else
+	{
+		// Trigger invulnerabiltiy
+		TriggerInvulnerability();
 	}
 }
 
