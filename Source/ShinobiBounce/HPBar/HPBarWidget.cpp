@@ -9,27 +9,14 @@
 #include "Components/SizeBox.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
-void UHPBarWidget::SetInitialHP(int32 HPAmount)
+void UHPBarWidget::SetInitialHP(int32 HPAmount, int32 AbilityCharges)
 {
-	// TODO: when paramter is fixed, uncomment below
-	// if (!Actor.isValid)
-	// {
-	// 	this->SetVisibility(ESlateVisibility::Hidden);
-	// }
-	// else
-	// {
-	// 	this->SetVisibility(ESlateVisibility::Visible);
-	// }
-	
-	//int32 HPAmount = Actor->GetHP();
-	// int32 HPPerNib = Actor->GetHPPerNib();
-	
 	UpdateMainBarWidth(HPAmount);
 	
-	const int32 TargetNibCount = GetNibCount(HPAmount);
+	const int32 TargetNibCount = AbilityCharges;
 	EnsureNibCount(TargetNibCount);
 	
-	RefreshNibActiveStates(HPAmount);
+	ActivateNibs();
 	
 	// Debugging
 	ensure(HPBarSizeBox);
@@ -62,18 +49,12 @@ void UHPBarWidget::NativeConstruct()
 void UHPBarWidget::UpdateHP(int32 HPAmount)
 {
 	
-	if (HPPerNib <= 0) return;
-	
 	HPAmount = FMath::Clamp(HPAmount, 0, MaxHP);
 	
 	// Update entity HP here
 	// e.g CurrentHP = HPAmount
 	
-	RefreshNibActiveStates(HPAmount);
-	
-	const int32 ActiveExtraNibs = FMath::Max(0, FMath::CeilToInt(static_cast<float>(HPAmount) / HPPerNib) - 1);
-	const int32 HPInCurrentSegment = HPAmount - (ActiveExtraNibs * HPPerNib);
-	const double SegmentRatio = static_cast<float>(HPInCurrentSegment) / HPPerNib;
+	const double SegmentRatio = static_cast<float>(HPAmount) / MaxHP;
 	
 	if (HPBorderMID)
 	{
@@ -85,34 +66,15 @@ void UHPBarWidget::UpdateHP(int32 HPAmount)
 		UE_LOG(LogTemp, Error, TEXT("HPBorderMID is NULL during UpdateHP"));
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("UpdateHP called: HPAmount=%d, HPPerNib=%d, MaxHP=%d"),
-	   HPAmount, HPPerNib, MaxHP);
+	UE_LOG(LogTemp, Warning, TEXT("UpdateHP called: HPAmount=%d, MaxHP=%d"),
+	   HPAmount, MaxHP);
 }
 
 void UHPBarWidget::UpdateMainBarWidth(int32 HPAmount)
 {
-	if (!HPBarSizeBox || HPPerNib <= 0) return;
-	
-	if (HPAmount < HPPerNib)
-	{
-		const float WidthRatio = static_cast<float>(HPAmount) / HPPerNib;
-		HPBarSizeBox->SetWidthOverride(20.f);
-		
-		HPBarSizeBox->SetWidthOverride(MaxHPBarWidth * WidthRatio);
-	}
-	else
-	{
-		HPBarSizeBox->SetWidthOverride(MaxHPBarWidth);
-	}
+	HPBarSizeBox->SetWidthOverride(MaxHPBarWidth);
 }
 
-int32 UHPBarWidget::GetNibCount(int32 HPAmount) const
-{
-	if (HPAmount <= HPPerNib || HPPerNib <= 0) return 0;
-	
-	const int32 TotalSegments = FMath::CeilToInt(static_cast<float>(HPAmount) / HPPerNib);
-	return FMath::Max(0, TotalSegments - 1);
-}
 
 void UHPBarWidget::EnsureNibCount(int32 TargetCount)
 {
@@ -154,14 +116,11 @@ void UHPBarWidget::EnsureNibCount(int32 TargetCount)
 	}
 }
 
-void UHPBarWidget::RefreshNibActiveStates(int32 HPAmount)
+void UHPBarWidget::ActivateNibs()
 {
 	for (int32 i = 0; i < SpawnedNibs.Num(); ++i)
 	{
 		if (!SpawnedNibs[i]) continue;
-		const int32 HPThreshold = (i + 1) * HPPerNib;
-		const bool bIsActive = HPAmount >= HPThreshold;
-		
-		SpawnedNibs[i]->SetActive(bIsActive);
+		SpawnedNibs[i]->SetActive(true);
 	}
 }

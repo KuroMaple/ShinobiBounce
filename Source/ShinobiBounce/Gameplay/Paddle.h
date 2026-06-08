@@ -40,6 +40,7 @@ public:
 	int32 MaxHP = 750;
 	
 	int32 CurrentHP = 0;
+	int32 AbilityCharges = 2;
 	
 	UPROPERTY()
 	EGoalSide PaddleSide = EGoalSide::Left;
@@ -65,7 +66,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category=Input)
 	TObjectPtr<UInputAction> MovePaddleAction;
 	
+	UPROPERTY(EditAnywhere, Category=Input)
+	TObjectPtr<UInputAction> UseAbilityPaddleAction;
+	
 	void Move(const FInputActionValue& Value);
+	void UseAbility(const FInputActionValue& Value);
 	
 	UFUNCTION()
 	virtual void OnHitByProjectile(UPrimitiveComponent* HitComp, 
@@ -89,6 +94,9 @@ private:
 	
 	FTimerHandle InvulnerabilityHandle;
 	FTimerHandle FlickerPaddleHandle;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Audio)
+	TObjectPtr<USoundBase> PaddleAbilitySfx;
 	
 	void CreateHPBar();
 	

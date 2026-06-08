@@ -42,7 +42,7 @@ public:
 	
 	// Should take in Player or enemy actor to get its hp in future
 	UFUNCTION(BlueprintCallable, Category=HP)
-	void SetInitialHP(int32 HPAmount);
+	void SetInitialHP(int32 HPAmount, int32 AbilityCharges);
 	
 	UFUNCTION()
 	virtual void NativeConstruct() override;
@@ -52,12 +52,10 @@ public:
 private:
 	int32 CurrentHp = 0;
 	int32 MaxHP = 1000;
-	int32 HPPerNib = 250;
 	float MaxHPBarWidth = 500.f;
 	
 	
 	void UpdateMainBarWidth(int32 HPAmount);
-	int32 GetNibCount(int32 HPAmount) const;
 	void EnsureNibCount(int32 TargetCount);
-	void RefreshNibActiveStates(int32 HPAmount);
+	void ActivateNibs();
 };

@@ -91,6 +91,7 @@ void APongGameMode::ResetRally()
 void APongGameMode::OnPaddleDefeated(APaddle* LosingPaddle)
 {
 	UE_LOG(LogTemp, Error, TEXT("APonggamemode::OnPaddleDefeated"));
+	
 	// TODO: Call on Defeat function of the paddle
 	// e.g LosingPaddle->OnDefeat();
 }

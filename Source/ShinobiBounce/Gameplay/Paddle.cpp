@@ -62,8 +62,14 @@ void APaddle::Move(const FInputActionValue& Value)
 	AddActorWorldOffset(Movement, true);
 }
 
+void APaddle::UseAbility(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Display, TEXT("Ability Triggered"));
+	UGameplayStatics::PlaySound2D(this, PaddleAbilitySfx);
+}
+
 void APaddle::OnHitByProjectile(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+                                FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (FMath::Abs(Hit.ImpactNormal.Y) > FMath::Abs(Hit.ImpactNormal.X))
 	{
@@ -119,7 +125,7 @@ void APaddle::CreateHPBar()
 	if (HPBar)
 	{
 		HPBar->AddToViewport();
-		HPBar->SetInitialHP(CurrentHP);
+		HPBar->SetInitialHP(CurrentHP, AbilityCharges);
 		HPBar->SetAnchorsInViewport(FAnchors(HPBarAnchor.X, HPBarAnchor.Y));
 		HPBar->SetAlignmentInViewport(HPBarAlignment);
 		HPBar->SetDesiredSizeInViewport(FVector2D(500.f, 100.f));
@@ -157,11 +163,10 @@ void APaddle::FlickerPaddle()
 	this->PaddleMesh->SetVisibility(!this->PaddleMesh->GetVisibleFlag());
 }
 
-// Called every frame
 void APaddle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// UE_LOG(LogTemp, Warning, TEXT("%s Tick"), *GetName());
+
 	UpdateMovement(DeltaTime);
 }
 
@@ -169,10 +174,10 @@ void APaddle::Tick(float DeltaTime)
 void APaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	// UE_LOG(LogTemp, Warning, TEXT("SetupPlayerInputComponent on %s"), *GetName());
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MovePaddleAction, ETriggerEvent::Triggered, this, &APaddle::Move);
+		EnhancedInputComponent->BindAction(UseAbilityPaddleAction, ETriggerEvent::Started, this, &APaddle::UseAbility);
 	}
 	else
 	{
@@ -193,7 +198,6 @@ void APaddle::TakeDamage(int32 Amount)
 	} 
 	else
 	{
-		// Trigger invulnerabiltiy
 		TriggerInvulnerability();
 	}
 }
