@@ -26,11 +26,12 @@ void AGoal::OnGoalOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!Cast<AProjectile>(OtherActor)) return;   // only react to projectiles
-
+	
 	if (APongGameMode* GM = GetWorld()->GetAuthGameMode<APongGameMode>())
 	{
 		GM->OnGoalHit(Side);
 	}
+
 }
 
 

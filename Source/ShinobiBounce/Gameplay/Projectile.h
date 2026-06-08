@@ -31,6 +31,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category=Movement)
 	float InitialSpeed = 1000.f;
+	
+	void TriggerResizeAnimation();
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -49,5 +52,10 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category=Audio)
 	TObjectPtr<USoundBase> WallHitSfx;
+	
+	FVector ProjectileBaseScale;
+	void RevertProjectileScale();
+	FTimerHandle ResizeAnimTimerHandle;
+	float ResizeAnimeTime = 0.25f;
 	
 };

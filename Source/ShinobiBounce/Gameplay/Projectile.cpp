@@ -3,6 +3,7 @@
 
 #include "Projectile.h"
 
+#include "Goal.h"
 #include "Paddle.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -36,10 +37,25 @@ AProjectile::AProjectile()
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 }
 
+void AProjectile::TriggerResizeAnimation()
+{
+	this->ProjectileMesh->SetRelativeScale3D(FVector(ProjectileBaseScale.X * 1.25, 
+		ProjectileBaseScale.Y * 1.25, ProjectileBaseScale.Z * 1.25));
+	
+	GetWorldTimerManager().SetTimer(
+		ResizeAnimTimerHandle,
+		this,
+		&AProjectile::RevertProjectileScale,
+		ResizeAnimeTime,
+		false
+	);
+}
+
 // Called when the game starts or when spawned
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	ProjectileBaseScale = this->ProjectileMesh->GetRelativeScale3D();
 	FVector NewDirection = FVector(Direction.X, Direction.Y, 0.f).GetSafeNormal();
 	ProjectileMovement->Velocity = NewDirection * this->InitialSpeed;
 }
@@ -52,12 +68,19 @@ void AProjectile::OnBounce(const FHitResult& ImpactResult, const FVector& Impact
 		SelectedSfx = PaddleHitSfx;
 	}
 	
+	TriggerResizeAnimation();
+	
 	UGameplayStatics::PlaySoundAtLocation(
 		this, 
 		SelectedSfx, 
 		ImpactResult.ImpactPoint
 		);
 	
+}
+
+void AProjectile::RevertProjectileScale()
+{
+	this->ProjectileMesh->SetRelativeScale3D(ProjectileBaseScale);
 }
 
 
