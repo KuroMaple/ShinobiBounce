@@ -70,6 +70,12 @@ void UHPBarWidget::UpdateHP(int32 HPAmount)
 	   HPAmount, MaxHP);
 }
 
+void UHPBarWidget::ConsumeNib(int32 ChargeCount)
+{
+	// Based on charge count, update index of nib
+	SpawnedNibs[ChargeCount - 1]->SetActive(false);
+}
+
 void UHPBarWidget::UpdateMainBarWidth(int32 HPAmount)
 {
 	HPBarSizeBox->SetWidthOverride(MaxHPBarWidth);

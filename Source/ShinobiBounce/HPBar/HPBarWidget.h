@@ -49,6 +49,8 @@ public:
 
 	UFUNCTION()
 	void UpdateHP(int32 HPAmount);
+	
+	void ConsumeNib(int32 ChargeCount);
 private:
 	int32 CurrentHp = 0;
 	int32 MaxHP = 1000;

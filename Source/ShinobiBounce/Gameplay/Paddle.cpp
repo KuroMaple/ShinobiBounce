@@ -64,8 +64,13 @@ void APaddle::Move(const FInputActionValue& Value)
 
 void APaddle::UseAbility(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Display, TEXT("Ability Triggered"));
-	UGameplayStatics::PlaySound2D(this, PaddleAbilitySfx);
+	if (AbilityCharges)
+	{
+		UGameplayStatics::PlaySound2D(this, PaddleAbilitySfx);
+		HPBar->ConsumeNib(AbilityCharges);
+		--AbilityCharges;
+	}
+	
 }
 
 void APaddle::OnHitByProjectile(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
