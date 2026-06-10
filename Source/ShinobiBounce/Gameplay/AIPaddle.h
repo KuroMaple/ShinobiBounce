@@ -12,7 +12,9 @@
 UCLASS()
 class SHINOBIBOUNCE_API AAIPaddle : public APaddle
 {
+
 	GENERATED_BODY()
+public:
 	AAIPaddle();
 protected:
 	UPROPERTY()

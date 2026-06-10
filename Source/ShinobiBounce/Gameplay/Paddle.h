@@ -8,6 +8,7 @@
 #include "ShinobiBounce/PongTypes.h"
 #include "Paddle.generated.h"
 
+class ANarutoClonePaddle;
 class UHPBarWidget;
 class UInputAction;
 class UCameraComponent;
@@ -81,7 +82,7 @@ protected:
 	
 	virtual bool ShouldSetUpPlayerInput() const { return true; }
 	
-	float MoveSpeed = 800.f;
+	float MoveSpeed = 1600.f;
 	
 private:
 	UPROPERTY(EditAnywhere, Category=OnDamage)
@@ -98,9 +99,21 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category=Audio)
 	TObjectPtr<USoundBase> PaddleAbilitySfx;
 	
-	void CreateHPBar();
+	FTimerHandle CloneTimerHandle;
+	FTimerHandle AbilityCardDisplayHandle;
+	
+	UPROPERTY()
+	TObjectPtr<ANarutoClonePaddle> ClonePaddle;
+	
+	virtual void CreateHPBar();
 	
 	void TriggerInvulnerability();
 	void EndInvulnerability();
 	void FlickerPaddle();
+	
+	void PauseGame();
+	void UnpauseGame();
+	
+	void SpawnClone(FVector ParentLocation);
+	void DespawnClone();
 };

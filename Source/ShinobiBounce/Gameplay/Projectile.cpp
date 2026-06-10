@@ -91,7 +91,7 @@ void AProjectile::Tick(float DeltaTime)
 	
 	// Spinning Kunai
 	const float CurrentSpeed = ProjectileMovement->Velocity.Size();
-	const float SpeedRatio = FMath::Pow(CurrentSpeed / InitialSpeed, 0.7f);
+	const float SpeedRatio = FMath::Pow(CurrentSpeed / InitialSpeed, 1.f);
 	ProjectileMesh->AddLocalRotation(FRotator(0.f, SpeedRatio, 0.f));
 }
 

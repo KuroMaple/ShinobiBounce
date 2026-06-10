@@ -4,6 +4,7 @@
 #include "Paddle.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "NarutoClonePaddle.h"
 #include "PongGameMode.h"
 #include "Projectile.h"
 #include "Blueprint/UserWidget.h"
@@ -46,7 +47,12 @@ void APaddle::BeginPlay()
 			{
 				UE_LOG(LogTemp, Error, TEXT("EnhancedInput subsystem is NULL"));
 			}
-			
+			TArray<AActor*> Found;
+			UGameplayStatics::GetAllActorsOfClass(this, ANarutoClonePaddle::StaticClass(), Found);
+			if (Found.Num() > 0)
+			{
+				ClonePaddle = Cast<ANarutoClonePaddle>(Found[0]);
+			}
 		}
 	}
 	PaddleMesh->OnComponentHit.AddDynamic(this, &APaddle::OnHitByProjectile);
@@ -69,6 +75,27 @@ void APaddle::UseAbility(const FInputActionValue& Value)
 		UGameplayStatics::PlaySound2D(this, PaddleAbilitySfx);
 		HPBar->ConsumeNib(AbilityCharges);
 		--AbilityCharges;
+		//Pause game here to show naruto summoning card
+		// PauseGame();
+		// GetWorldTimerManager().SetTimer(
+		// AbilityCardDisplayHandle,
+		// this,
+		// &APaddle::UnpauseGame,
+		// 0.5f,
+		// false
+		// );
+		// Bring Clone into arena
+		FVector PlayerPaddleLocation = GetActorLocation();
+		
+		SpawnClone(PlayerPaddleLocation);
+		
+		GetWorldTimerManager().SetTimer(
+		CloneTimerHandle,
+		this,
+		&APaddle::DespawnClone,
+		2.5f,
+		false
+		);
 	}
 	
 }
@@ -166,6 +193,35 @@ void APaddle::EndInvulnerability()
 void APaddle::FlickerPaddle()
 {
 	this->PaddleMesh->SetVisibility(!this->PaddleMesh->GetVisibleFlag());
+}
+
+void APaddle::PauseGame()
+{
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+}
+
+void APaddle::UnpauseGame()
+{
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+}
+
+void APaddle::SpawnClone(FVector ParentLocation)
+{
+	ClonePaddle->SetActorLocation(
+			FVector(
+				ParentLocation.X - 1000.f, 
+				ParentLocation.Y, 
+				ParentLocation.Z));
+}
+
+void APaddle::DespawnClone()
+{
+	FVector CurrentLocation = ClonePaddle->GetActorLocation();
+	ClonePaddle->SetActorLocation(FVector(
+		CurrentLocation.X,
+		CurrentLocation.Y + 5000.f,
+		CurrentLocation.Z
+	));
 }
 
 void APaddle::Tick(float DeltaTime)
